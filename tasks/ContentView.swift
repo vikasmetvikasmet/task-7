@@ -14,38 +14,52 @@ struct ContentView: View {
             if !isAnimating {
                 withAnimation(.interpolatingSpring(stiffness: 170, damping: 15)) {
                     isAnimating = true
-                } completion: {
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) {
                     isAnimating = false
                 }
             }
         } label: {
-            GeometryReader { proxy in
-                let width = proxy.size.width / 2
-                let systemName = "play.fill"
+            ZStack {
+                Circle()
+                    .fill(Color.gray.opacity(0.3))
+                    .frame(width: 70, height: 70)
+                    .frame(maxHeight: .infinity, alignment: .center)
+                    .opacity(isAnimating ? 1: .zero)
                 
-                HStack(alignment: .center, spacing: 0) {
-                    Image(systemName: systemName)
-                        .renderingMode(.template)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: isAnimating ?  width: .zero)
-                        .opacity(isAnimating ? 1 : .zero)
-                    Image(systemName: systemName)
-                        .renderingMode(.template)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: width)
-                    Image(systemName: systemName)
-                        .renderingMode(.template)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: isAnimating ? 0.5 : width)
-                        .opacity(isAnimating ? .zero: 1)
-                }
-                .frame(maxHeight: .infinity, alignment: .center)
-                .scaleEffect(0.86)
-                
-            }.frame(maxWidth: 62)
+                GeometryReader { proxy in
+                    let width = proxy.size.width / 2
+                    let systemName = "play.fill"
+                    
+                    HStack(alignment: .center, spacing: 0) {
+                        Image(systemName: systemName)
+                            .renderingMode(.template)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: isAnimating ?  width: .zero)
+                            .opacity(isAnimating ? 1 : .zero)
+                            .foregroundColor(Color.black)
+                        
+                        Image(systemName: systemName)
+                            .renderingMode(.template)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: width)
+                            .foregroundColor(Color.black)
+                        
+                        Image(systemName: systemName)
+                            .renderingMode(.template)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: isAnimating ? 0.5 : width)
+                            .opacity(isAnimating ? .zero : 1)
+                            .foregroundColor(Color.black)
+                    }
+                    .frame(maxHeight: .infinity, alignment: .center)
+                    .scaleEffect(isAnimating ? 0.86 : 1)
+                    
+                }.frame(maxWidth: 62)
+            }
         }
     }
 }
