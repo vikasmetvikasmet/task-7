@@ -39,7 +39,7 @@ struct ContentView: View {
                         .scaledToFit()
                         .frame(width: width)
                         .foregroundColor(Color.black)
-                    
+                        
                     Image(systemName: systemName)
                         .renderingMode(.template)
                         .resizable()
@@ -50,6 +50,7 @@ struct ContentView: View {
                 }
                 .frame(maxHeight: .infinity, alignment: .center)
                 
+                
             }.frame(maxWidth: 62)
         }.buttonStyle(CustomButtonStyle(isAnimating: $isAnimating))
     }
@@ -58,18 +59,19 @@ struct CustomButtonStyle: ButtonStyle {
     @Binding var isAnimating: Bool
     private let animationDuration: CGFloat = 0.22
     private let backgroundColor: Color = Color.gray.opacity(0.3)
-    private let buttonSize: CGFloat = 70
+    private let buttonSize: CGFloat = 80
     
     func makeBody(configuration: Configuration) -> some View {
         
         configuration.label
-            .scaleEffect(isAnimating ? 0.86 : 1)
+            .scaleEffect(isAnimating ? 0.6 : 1)
             .background{
                 Circle()
-                    .fill(backgroundColor)
-                    .frame(width: buttonSize, height: buttonSize)
+                    .frame(maxWidth: buttonSize, maxHeight: buttonSize)
+                    .foregroundStyle(backgroundColor)
                     .frame(maxHeight: .infinity, alignment: .center)
-                    .opacity(isAnimating ? 1: 0)
+                    .scaleEffect(isAnimating ? 1.2 : 1.4)
+                    .opacity(isAnimating ? 1 : 0)
                     .animation(.easeInOut(duration: animationDuration), value: isAnimating)
             }
     }
