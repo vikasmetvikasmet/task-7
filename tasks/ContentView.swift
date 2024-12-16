@@ -6,45 +6,42 @@
 //
 
 import SwiftUI
-
 struct ContentView: View {
-    let height = UIScreen.main.bounds.height * 0.25
-    @State var position = CGPoint(
-        x: UIScreen.main.bounds.midX,
-        y: UIScreen.main.bounds.midY
-    )
-    let colors: [Color] = [Color.white, .pink, .yellow, .black]
+    @State var isVertical = false
+    private let spacing: CGFloat = 5
+    private let countRectangle = 7
+    
     var body: some View {
-        
-        ZStack {
+        GeometryReader { proxy in
+            let width = proxy.size.width
+            let height = proxy.size.height
+            let size = isVertical
+                ? height / CGFloat(countRectangle)
+                : (width - spacing * CGFloat(countRectangle - 1)) / CGFloat(countRectangle)
             
-            VStack(spacing: 0) {
-                ForEach(colors, id: \.self ) { color in
-                    Rectangle()
-                        .fill(color)
-                        .frame(height: height)
-                }
+            ForEach(0..<countRectangle, id: \.self) { index in
+                Rectangle()
+                    .fill(.blue)
+                    .frame(width: size, height: size)
+                    .cornerRadius(8)
+                    .offset(
+                        x: isVertical
+                            ? (size - (height - width) / CGFloat(countRectangle - 1)) * CGFloat(index)
+                            : CGFloat(index) * size + spacing * CGFloat(index),
+                        y: isVertical
+                            ? height - size * (CGFloat(index) + 1)
+                            : height / 2 - size / 2
+                    ).onTapGesture {
+                        withAnimation {
+                            isVertical.toggle()
+                        }
+                    }
             }
-            
-            Color.white
-                .blendMode(.difference)
-                .overlay {
-                    Rectangle()
-                        .overlay(.white.blendMode(.overlay))
-                        .overlay(.black.blendMode(.overlay))
-                }
-                .blendMode(.saturation)
-                .frame(width: 100, height: 100)
-                .cornerRadius(10)
-                .position(x: position.x, y: position.y)
-                .gesture(
-                    DragGesture().onChanged { position = $0.location }
-                )
         }
     }
 }
 
+
 #Preview {
     ContentView()
 }
-
