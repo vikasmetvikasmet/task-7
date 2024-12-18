@@ -6,41 +6,44 @@
 //
 
 import SwiftUI
+
 struct ContentView: View {
-    @State var isVertical = false
-    private let spacing: CGFloat = 5
-    private let countRectangle = 7
+    @State private var isPressing =  true
+    private var rectangleWidth: CGFloat { isPressing ? 110 : 300 }
+    private var rectangleHeight: CGFloat { isPressing ? 60 : 400 }
+    private var rectangleCornerRadius: CGFloat { isPressing ? 10 : 20 }
+    private var rectangleOffset: CGSize { CGSize(width: isPressing ? 130 : 0, height: isPressing ? 350 : 0)}
     
     var body: some View {
-        GeometryReader { proxy in
-            let width = proxy.size.width
-            let height = proxy.size.height
-            let size = isVertical
-                ? height / CGFloat(countRectangle)
-                : (width - spacing * CGFloat(countRectangle - 1)) / CGFloat(countRectangle)
-            
-            ForEach(0..<countRectangle, id: \.self) { index in
-                Rectangle()
-                    .fill(.blue)
-                    .frame(width: size, height: size)
-                    .cornerRadius(8)
-                    .offset(
-                        x: isVertical
-                            ? (size - (height - width) / CGFloat(countRectangle - 1)) * CGFloat(index)
-                            : CGFloat(index) * size + spacing * CGFloat(index),
-                        y: isVertical
-                            ? height - size * (CGFloat(index) + 1)
-                            : height / 2 - size / 2
-                    ).onTapGesture {
-                        withAnimation {
-                            isVertical.toggle()
-                        }
-                    }
-            }
+        ZStack {
+            Rectangle()
+                .foregroundColor(.blue)
+                .frame(width: rectangleWidth, height: rectangleHeight)
+                .cornerRadius(rectangleCornerRadius)
+                .offset(x: rectangleOffset.width, y: rectangleOffset.height)
+            Button {
+                withAnimation {
+                    isPressing.toggle()
+                }
+            } label: {
+                if isPressing {
+                    Text("Open")
+                        .foregroundColor(.white)
+                        .font(.system(size: 20, weight: .medium))
+                        .font(.headline)
+                        .opacity(isPressing ? 1 : 0)
+                        .frame(width: rectangleOffset.width, height: rectangleOffset.height)
+                } else {
+                    Label("Back", systemImage: "arrowshape.backward.fill")
+                        .font(.system(size: 20, weight: .medium))
+                        .foregroundColor(.white)
+                        .font(.headline)
+                        .opacity(isPressing ? 0 : 1)
+                }
+            }.offset(x: isPressing ? rectangleOffset.width : -100, y: isPressing ?  rectangleOffset.height : -170)
         }
     }
 }
-
 
 #Preview {
     ContentView()
